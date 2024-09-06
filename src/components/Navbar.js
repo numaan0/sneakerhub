@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppBar, Toolbar, Typography, Button, TextField, IconButton, Menu, MenuItem } from '@mui/material';
 import { FaSearch, FaShoppingCart, FaUser, FaAngleDown } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import LoginDialog from './LoginDialog';
 import { useNavigate } from 'react-router-dom';
+import { fetchCartByUserId } from '../api';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -12,6 +13,17 @@ const Navbar = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [cartItemCount, setCartItemCount] = useState(0);
+
+  useEffect(() => {
+    if (user && user.userType === 'customer') {
+      fetchCartByUserId(user.id).then(cart => {
+        setCartItemCount(cart.data.items.length);
+      }).catch(error => {
+        console.error('Error fetching cart:', error);
+      });
+    }
+  }, [user]);
 
   const handleDialogOpen = (isLogin) => {
     setIsLogin(isLogin);
@@ -69,7 +81,7 @@ const Navbar = () => {
                 </Button>
                 <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
                   <MenuItem component={Link} to="/account" onClick={handleMenuClose}>My Profile</MenuItem>
-                  <MenuItem component={Link} to="/orders" onClick={handleMenuClose}>Orders</MenuItem>
+                  <MenuItem component={Link} to="/my-orders" onClick={handleMenuClose}>Orders</MenuItem>
                   <MenuItem component={Link} to="/wishlist" onClick={handleMenuClose}>Wishlist</MenuItem>
                   <MenuItem onClick={onLogout}>Logout</MenuItem>
                 </Menu>
@@ -97,7 +109,7 @@ const Navbar = () => {
           <>
             <IconButton color="inherit" component={Link} to="/cart" className="mr-4">
               <FaShoppingCart />
-              <span className="ml-1">Cart</span>
+              <span className="ml-1">Cart ({cartItemCount})</span>
             </IconButton>
             <Button color="inherit" className="text-black mr-4">
               Become a Seller

@@ -12,10 +12,10 @@ const getAuthHeaders = () => {
 
 // Existing functions
 export const fetchProducts = () =>
-  axios.get(`${SERVERURL}/api/products`, { headers: getAuthHeaders() });
+  axios.get(`${SERVERURL}/api/products`);
 
 export const fetchProductById = (id) =>
-  axios.get(`${SERVERURL}/api/orders/products/${id}`, { headers: getAuthHeaders() });
+  axios.get(`${SERVERURL}/api/products/${id}`, { headers: getAuthHeaders() });
 
 export const fetchUsers = () =>
   axios.get(`${SERVERURL}/api/orders/users`, { headers: getAuthHeaders() });
@@ -167,7 +167,11 @@ export const getProductsBySeller = async (sellerId) => {
 
 export const createOrder = async (order, userId) => {
   try {
-    const response = await axios.post(API_BASE_URL, order, { params: { userId } });
+    const response = await axios.post(`${SERVERURL}/api/orders`, order, { params: { userId }, headers: {
+      ...getAuthHeaders()
+    }}
+      
+    );
     return response.data;
   } catch (error) {
     console.error('Create order error:', error.response ? error.response.data : error.message);
@@ -177,7 +181,11 @@ export const createOrder = async (order, userId) => {
 
 export const getOrdersByUserId = async (userId) => {
   try {
-    const response = await axios.get(`${SERVERURL}/api/orders/user/${userId}`);
+    const response = await axios.get(`${SERVERURL}/api/orders/user/${userId}`, {
+      headers: {
+        ...getAuthHeaders()
+      }
+    });
     return response.data;
   } catch (error) {
     console.error('Get orders by user ID error:', error.response ? error.response.data : error.message);

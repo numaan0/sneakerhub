@@ -9,6 +9,9 @@ import { AuthProvider } from './context/AuthContext'; // Import AuthProvider
 import { ToastContainer } from 'react-toastify'; // Import ToastContainer
 import 'react-toastify/dist/ReactToastify.css';
 import SellerDashboard from './pages/SellerDashboard';
+import Checkout from './pages/Checkout';
+import OrderConfirmation from './pages/OrderConfirmation';
+import MyOrders from './pages/MyOrder';
 
 function App() {
   return (
@@ -21,6 +24,9 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/account" element={<Account />} />
           <Route path="/seller-dashboard" element={<SellerDashboard />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/order-confirmation" element={<OrderConfirmation />} />
+          <Route path="/my-orders" element={<MyOrders />} />
         </Routes>
         <ToastContainer /> 
       </Router>
