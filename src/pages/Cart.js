@@ -1,42 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Typography, Button, Grid, List, ListItem, ListItemText, Divider, Box, Avatar } from '@mui/material';
-import { fetchCartByUserId, removeItemFromCart, clearCart } from '../api';
-import { useAuth } from '../context/AuthContext';
+import React, { useEffect } from 'react';
+import { Container, Typography, Button, Grid, List, ListItem, ListItemText, Divider, Box, Avatar, CircularProgress } from '@mui/material';
+import { useCart } from '../context/CartContext';
 import { SERVERURL } from './../api';
 import { useNavigate } from 'react-router-dom';
-const Cart = () => {
-  const { user } = useAuth();
-  const [cartItems, setCartItems] = useState([]);
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (user) {
-      fetchCartByUserId(user.id).then(cart => {
-        console.log(cart.data.items)
-        setCartItems(cart.data.items);
-        console.log(cartItems,"The cart items")
-      }).catch(error => {
-        console.error('Error fetching cart:', error);
-      });
-    }
-  }, [user]);
-  
-  const totalPrice = cartItems?.length>0? cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0): 0;
-  const discount = 0; // Replace with actual value
-  const finalPrice = totalPrice - discount;
 
-  const handleRemoveItem = async (cartItemId) => {
-    try {
-      await removeItemFromCart(user.id, cartItemId);
-      setCartItems(cartItems.filter(item => item.id !== cartItemId));
-    } catch (error) {
-      console.error('Error removing item from cart:', error);
-    }
-  };
+const Cart = () => {
+  const { cartItems, totalPrice, discount, finalPrice, handleRemoveItem, isLoading, fetchCart } = useCart();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchCart();
+  }, [fetchCart]);
 
   const handleCheckout = () => {
-    console.log('Proceed to checkout');
     navigate('/checkout', { state: { cartItems } });
   };
+
+  if (isLoading) {
+    return (
+      <Container maxWidth="md" sx={{ mt: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
@@ -46,45 +32,42 @@ const Cart = () => {
             From Saved Addresses
           </Typography>
           <List>
-
-            {
-              cartItems?.length > 0 ?
-              (cartItems.map(item => (
+            {cartItems?.length > 0 ? (
+              cartItems.map(item => (
                 <React.Fragment key={item.id}>
                   <ListItem alignItems="flex-start">
                     <Grid container spacing={2}>
                       <Grid item xs={4}>
                         <Avatar
                           variant="square"
-                          src={SERVERURL+item.product.imageUrl}
+                          src={SERVERURL + item.product.imageUrl}
                           alt={item.product.name}
                           sx={{ width: '100%', height: 'auto', borderRadius: 2 }}
                         />
                       </Grid>
                       <Grid item xs={8}>
-                      <Box display="flex" justifyContent="space-between" alignItems="center">
-                        <ListItemText
-                          primary={item.product.name}
-                          secondary={`Size: ${item.size || 'N/A'}`}
-                          primaryTypographyProps={{ variant: 'h6' }}
-                          sx={{ flex: 1 }}
-                        />
-                        <ListItemText
-                          primary={item.product.category}
-                          secondary={`By Seller: ${item.product.seller.username || 'N/A'}`}
-                          primaryTypographyProps={{ variant: 'h6' }}
-                          sx={{ flex: 1 }}
-                        />
-                      </Box>
-                      <Box display="flex" justifyContent="space-between" alignItems="center">
-
-                        <Typography variant="body2" color="green" sx={{ mt: 1, flex: 1 }}>
-                          {item.availabilityStatus || "Available"}
-                        </Typography>
-                        <Typography variant="body2" color="green" sx={{ mt: 1, flex: 1 }}>
-                          {"Added: "+item.quantity || "1" +" Items"}
-                        </Typography>
-                      </Box>
+                        <Box display="flex" justifyContent="space-between" alignItems="center">
+                          <ListItemText
+                            primary={item.product.name}
+                            secondary={`Size: ${item.size || 'N/A'}`}
+                            primaryTypographyProps={{ variant: 'h6' }}
+                            sx={{ flex: 1 }}
+                          />
+                          <ListItemText
+                            primary={item.product.category}
+                            secondary={`By Seller: ${item.product.seller.username || 'N/A'}`}
+                            primaryTypographyProps={{ variant: 'h6' }}
+                            sx={{ flex: 1 }}
+                          />
+                        </Box>
+                        <Box display="flex" justifyContent="space-between" alignItems="center">
+                          <Typography variant="body2" color="green" sx={{ mt: 1, flex: 1 }}>
+                            {item.availabilityStatus || "Available"}
+                          </Typography>
+                          <Typography variant="body2" color="green" sx={{ mt: 1, flex: 1 }}>
+                            {"Added: " + item.quantity || "1" + " Items"}
+                          </Typography>
+                        </Box>
                         <Button
                           variant="outlined"
                           color="primary"
@@ -108,7 +91,10 @@ const Cart = () => {
                   </ListItem>
                   <Divider />
                 </React.Fragment>
-              ))):(<p>No Items available.</p>)}   
+              ))
+            ) : (
+              <Typography variant="body1">No Items available.</Typography>
+            )}
           </List>
         </Grid>
         <Grid item xs={12} md={4}>
@@ -143,6 +129,7 @@ const Cart = () => {
               fullWidth
               sx={{ mt: 3 }}
               onClick={handleCheckout}
+              disabled={cartItems.length === 0}
             >
               Proceed To Checkout
             </Button>

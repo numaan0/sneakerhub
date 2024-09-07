@@ -6,7 +6,7 @@ const OrderConfirmation = () => {
   const navigate = useNavigate();
 
   const handleContinueShopping = () => {
-    navigate('/products'); // Redirect to products page
+    navigate('/'); // Redirect to products page
   };
 
   return (

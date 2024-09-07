@@ -46,7 +46,7 @@ const Checkout = () => {
 
     try {
       const response = await createOrder(orderData, userId);
-      console.log('Order successfully created:', response);
+      // console.log('Order successfully created:', response);
 
       // Redirect to the order confirmation page
       navigate('/order-confirmation', { state: { order: response } });

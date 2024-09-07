@@ -12,10 +12,12 @@ import SellerDashboard from './pages/SellerDashboard';
 import Checkout from './pages/Checkout';
 import OrderConfirmation from './pages/OrderConfirmation';
 import MyOrders from './pages/MyOrder';
+import { CartProvider } from './context/CartContext';
 
 function App() {
   return (
-    <AuthProvider> {/* Wrap your app with AuthProvider */}
+    <AuthProvider>
+      <CartProvider>
       <Router>
         <Navbar />
         <Routes>
@@ -30,6 +32,7 @@ function App() {
         </Routes>
         <ToastContainer /> 
       </Router>
+      </CartProvider>
     </AuthProvider>
   );
 }

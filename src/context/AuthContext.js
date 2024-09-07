@@ -1,7 +1,6 @@
 // src/context/AuthContext.js
 import React, { createContext, useState, useContext, useEffect  } from 'react';
 import { login, signup, checkUsernameAvailability, uploadProfilePic } from '../api';
-
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -20,7 +19,13 @@ export const AuthProvider = ({ children }) => {
   const handleLogin = async (username, password) => {
     try {
       const response = await login(username, password);
-      const { token, user } = response; // Assuming response contains both token and user details
+      const { token, user } = response;
+      const userType = user?.user_type ?? user?.userType;
+
+      // if(userType=='seller'){
+      //   navigate('/seller/dashboard');
+      // }
+      // Assuming response contains both token and user details
   
       // Store token and user info in localStorage or sessionStorage
       localStorage.setItem('authToken', token); // Store token
@@ -73,7 +78,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const handleLogout = (navigate) => {
-    localStorage.removeItem('authToken'); // Remove token from localStorage
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user') // Remove token from localStorage
     setUser(null);
     navigate('/'); // Clear user on logout
   };

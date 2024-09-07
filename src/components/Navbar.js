@@ -6,9 +6,11 @@ import { useAuth } from '../context/AuthContext';
 import LoginDialog from './LoginDialog';
 import { useNavigate } from 'react-router-dom';
 import { fetchCartByUserId } from '../api';
+import { useCart } from '../context/CartContext';
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const { cartItems } = useCart();
   const { user, handleLogout } = useAuth();
   const [openDialog, setOpenDialog] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
@@ -50,9 +52,12 @@ const Navbar = () => {
     <AppBar position="static" className="bg-white text-black">
       <Toolbar className="flex items-center justify-between">
         <Typography variant="h6" className="flex-grow-0 mr-4">
-          <Link to="/" className="text-black no-underline hover:underline flex items-center">
+          {user?.userType=='customer'?(<Link to="/" className="text-white no-underline hover:underline flex items-center">
             SneakerHub
-          </Link>
+          </Link>):(<p  className="text-white no-underline hover:underline flex items-center">
+            SneakerHub
+          </p>)}
+          
         </Typography>
 
         <div className="relative flex items-center rounded-sm flex-grow mx-4">
@@ -109,7 +114,7 @@ const Navbar = () => {
           <>
             <IconButton color="inherit" component={Link} to="/cart" className="mr-4">
               <FaShoppingCart />
-              <span className="ml-1">Cart ({cartItemCount})</span>
+              <span className="ml-1">Cart ({cartItems?.length || 0})</span>
             </IconButton>
             <Button color="inherit" className="text-black mr-4">
               Become a Seller

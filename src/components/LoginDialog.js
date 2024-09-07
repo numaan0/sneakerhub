@@ -16,7 +16,6 @@ import Avatar from '@mui/material/Avatar';
 import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
 import { checkUsernameAvailability } from '../api';
-
 const LoginDialog = ({ open, onClose, isLogin, setIsLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -30,7 +29,7 @@ const LoginDialog = ({ open, onClose, isLogin, setIsLogin }) => {
   const [usernameError, setUsernameError] = useState('');
 
   const navigate = useNavigate(); // Initialize useNavigate
-  const { handleLogin, handleSignup, error } = useAuth();
+  const { handleLogin, handleSignup, error, user } = useAuth();
 
   useEffect(() => {
     const checkUsername = async () => {
@@ -65,8 +64,9 @@ const LoginDialog = ({ open, onClose, isLogin, setIsLogin }) => {
       if (!error) {
         toast.success(isLogin ? 'Login successful!' : 'Signup successful!');
         onClose();
+        const user = JSON.parse(localStorage.getItem('user'));
 
-        if (userType === 'seller') {
+        if (user?.user_type === 'seller') {
           navigate('/seller-dashboard'); // Redirect to seller dashboard
         }
       } else {

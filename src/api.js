@@ -1,9 +1,9 @@
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 export const SERVERURL = 'http://localhost:8080';
 const API_BASE_URL = 'https://dummyjson.com'; // Existing dummy API base URL
 const AUTH_API_BASE_URL = 'http://localhost:8080'; // New dummy auth API base URL
-
 // Function to get auth headers
 const getAuthHeaders = () => {
   const token = localStorage.getItem('authToken');
@@ -36,7 +36,7 @@ export const addProduct = async (formData, id = null) => {
 
     return response.data;
   } catch (error) {
-    console.error('Error adding or updating product:', error.response ? error.response.data : error.message);
+    toast.error('Error adding or updating product:', error.response ? error.response.data : error.message);
     throw error;
   }
 };
@@ -53,7 +53,7 @@ export const deleteProduct = async ( id = null) => {
 
     return response.data;
   } catch (error) {
-    console.error('Error adding or updating product:', error.response ? error.response.data : error.message);
+    toast.error('Error adding or updating product:', error.response ? error.response.data : error.message);
     throw error;
   }
 };
@@ -67,7 +67,7 @@ export const login = async (username, password, user_type) => {
     localStorage.setItem('authToken', token);
     return { token, user };
   } catch (error) {
-    console.error('Login error:', error.response ? error.response.data : error.message);
+    toast.error('Login error:', error.response ? error.response.data : error.message);
     throw error;
   }
 };
@@ -86,9 +86,9 @@ export const signup = async (username, password, email, dob, profile_pic, user_t
     return response.data;
   } catch (error) {
     if (error.response && error.response.data.error) {
-      console.error('Signup error:', error.response.data.error);
+      toast.error('Signup error:', error.response.data.error);
     } else {
-      console.error('Signup failed');
+      toast.error('Signup failed');
     }
     throw error;
   }
@@ -115,7 +115,7 @@ export const updateUser = async (username, updatedUserData) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Update user error:', error.response ? error.response.data : error.message);
+    toast.error('Update user error:', error.response ? error.response.data : error.message);
     throw error;
   }
 };
@@ -128,7 +128,7 @@ export const createOrUpdateProduct = async (productData) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Create or update product error:', error.response ? error.response.data : error.message);
+    toast.error('Create or update product error:', error.response ? error.response.data : error.message);
     throw error;
   }
 };
@@ -145,7 +145,7 @@ export const uploadProductImage = async (username, file) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Upload product image error:', error.response ? error.response.data : error.message);
+    toast.error('Upload product image error:', error.response ? error.response.data : error.message);
     throw error;
   }
 };
@@ -160,7 +160,7 @@ export const getProductsBySeller = async (sellerId) => {
       });
       return response.data; // Returns the list of products
   } catch (error) {
-      console.error("Error fetching products by seller:", error);
+      toast.error("Error fetching products by seller:", error);
       throw error;
   }
 };
@@ -174,7 +174,7 @@ export const createOrder = async (order, userId) => {
     );
     return response.data;
   } catch (error) {
-    console.error('Create order error:', error.response ? error.response.data : error.message);
+    toast.error('Create order error:', error.response ? error.response.data : error.message);
     throw error;
   }
 };
@@ -188,7 +188,7 @@ export const getOrdersByUserId = async (userId) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Get orders by user ID error:', error.response ? error.response.data : error.message);
+    toast.error('Get orders by user ID error:', error.response ? error.response.data : error.message);
     throw error;
   }
 };
@@ -196,10 +196,29 @@ export const getOrdersByUserId = async (userId) => {
 
 export const getOrderById = async (orderId) => {
   try {
-    const response = await axios.get(`${SERVERURL}/api/orders/${orderId}`);
+    const response = await axios.get(`${SERVERURL}/api/orders/${orderId}`, {
+      headers: {
+        ...getAuthHeaders()
+      }
+    });
     return response.data;
   } catch (error) {
-    console.error('Get order by ID error:', error.response ? error.response.data : error.message);
+    toast.error('Get order by ID error:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+
+
+export const getOrderBySellerId = async (orderId) => {
+  try {
+    const response = await axios.get(`${SERVERURL}/api/orders/seller/${orderId}`, {
+      headers: {
+        ...getAuthHeaders()
+      }
+    });
+    return response.data;
+  } catch (error) {
+    toast.error('Get order by ID error:', error.response ? error.response.data : error.message);
     throw error;
   }
 };
@@ -210,7 +229,7 @@ export const updateOrderStatus = async (orderId, status) => {
     const response = await axios.put(`${SERVERURL}/api/orders/${orderId}/status`, null, { params: { status } });
     return response.data;
   } catch (error) {
-    console.error('Update order status error:', error.response ? error.response.data : error.message);
+    toast.error('Update order status error:', error.response ? error.response.data : error.message);
     throw error;
   }
 };
@@ -225,7 +244,7 @@ export const clearCart = async (userId) => {
       headers: getAuthHeaders()
     });
   } catch (error) {
-    console.error('Error clearing cart:', error.response ? error.response.data : error.message);
+    toast.error('Error clearing cart:', error.response ? error.response.data : error.message);
     throw error;
   }
 };
@@ -238,7 +257,7 @@ export const removeItemFromCart = async (userId, cartItemId) => {
 
     return response.data;
   } catch (error) {
-    console.error('Error removing item from cart:', error.response ? error.response.data : error.message);
+    toast.error('Error removing item from cart:', error.response ? error.response.data : error.message);
     throw error;
   }
 };
@@ -253,7 +272,7 @@ export const addItemToCart = async (userId, productId, quantity) => {
 
     return response.data;
   } catch (error) {
-    console.error('Error adding item to cart:', error.response ? error.response.data : error.message);
+    toast.error('Error adding item to cart:', error.response ? error.response.data : error.message);
     throw error;
   }
 };

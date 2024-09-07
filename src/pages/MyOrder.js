@@ -37,7 +37,7 @@ const MyOrders = () => {
                       Status: {order.status}
                     </Typography>
                     <Typography variant="body2">
-                      Placed on: {new Date(order.createdAt).toLocaleDateString()}
+                      Placed on: {new Date(order.orderDate).toLocaleDateString()}
                     </Typography>
                     <Divider sx={{ my: 2 }} />
                     {order.orderItems.map(item => (
@@ -55,7 +55,7 @@ const MyOrders = () => {
                           sx={{ flex: 1, ml: 2 }}
                         />
                         <Typography variant="body2">
-                          Price: ${item.price}
+                          Price: ₹{item.price}/-
                         </Typography>
                       </Box>
                     ))}
