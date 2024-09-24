@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardContent, Button, Typography, Grid, IconButton } from '@mui/material';
 import { FaPlus, FaEdit, FaTrash, FaBoxOpen, FaChartLine, FaUserCog } from 'react-icons/fa';
 import AddProductDialog from '../components/AddProductDialog';
-import { addProduct, getProductsBySeller, deleteProduct, getOrderBySellerId } from '../api';
+import { addProduct, getProductsBySeller, deleteProduct, getOrderBySellerId, updateOrderStatus} from '../api';
 import OrderDetailsDialog from '../components/OrderDetail';
 import { toast } from 'react-toastify';
 
@@ -20,6 +20,18 @@ const SellerDashboard = () => {
     const sellerId = user?.id;
     const [selectedOrderId, setSelectedOrderId] = useState(null);
     const [isOrderDialogOpen, setOrderDialogOpen] = useState(false);
+
+
+    const getTotalSales = () => {
+        return orders.reduce((total, order) => {
+          const orderTotal = order.orderItems.reduce((orderSum, item) => {
+            return orderSum + (item.price * item.quantity);
+          }, 0);
+          return total + orderTotal;
+        }, 0);
+      };
+      
+      const totalSales = getTotalSales();
 
     const loadProducts = async () => {
         if (sellerId) {
@@ -119,8 +131,9 @@ const SellerDashboard = () => {
         // setSelectedOrderId(null);
       };
 
-      const handleSaveOrder = (updatedOrder) => {
+      const handleSaveOrder = (orderId, status) => {
         // onUpdateOrder(updatedOrder);
+        updateOrderStatus(orderId, status)
       };
 
     return (
@@ -246,7 +259,7 @@ const SellerDashboard = () => {
                             <div className="flex justify-around items-center">
                                 <div className="text-center">
                                     <Typography variant="h5" className="font-bold text-blue-600">
-                                        ₹12,345
+                                    ₹{totalSales.toFixed(2)}
                                     </Typography>
                                     <Typography className="text-gray-500">Total Sales</Typography>
                                 </div>
@@ -267,7 +280,7 @@ const SellerDashboard = () => {
                     </Card>
                 </Grid>
 
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                     <Card className="shadow-lg">
                         <CardContent>
                             <div className="flex justify-between items-center mb-4">
@@ -284,7 +297,7 @@ const SellerDashboard = () => {
                             </Button>
                         </CardContent>
                     </Card>
-                </Grid>
+                </Grid> */}
             </Grid>
 
             <AddProductDialog

@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Grid, Typography, Button, Card, CardMedia, Box } from '@mui/material';
-import { fetchProductById, addItemToCart, SERVERURL } from '../api';
+import { fetchProductById, addItemToCart, SERVERURL, getRelatedProducts } from '../api';
 import { useAuth } from '../context/AuthContext';
+import ProductCard from './ProductCard';
+import StarIcon from '@mui/icons-material/Star';
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const {user} = useAuth();
+  const { user } = useAuth();
   const userId = user.id;
+  const [relatedProducts, setRelatedProducts] = useState([]);
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await fetchProductById(id);
+        // const rating = response.data.rating
         setProduct(response.data);
+
+        // Fetch related products
+        const relatedProductsResponse = await getRelatedProducts(response.data.category, response.data.id);
+        setRelatedProducts(relatedProductsResponse.slice(0, 10));
       } catch (error) {
         console.error('Error fetching product:', error);
       }
@@ -24,10 +33,9 @@ const ProductDetails = () => {
   }, [id]);
 
   const addToCart = async () => {
-    if (!product) return; // Prevent adding to cart if no product
+    if (!product) return;
 
     try {
-      // const userId = 1; // Replace with actual user ID
       await addItemToCart(userId, product.id, quantity);
       navigate('/cart');
     } catch (error) {
@@ -57,16 +65,6 @@ const ProductDetails = () => {
               alt={product.name}
               className="object-cover"
             />
-            {/* <Box sx={{ display: 'flex', justifyContent: 'space-between', p: 2 }}>
-              {product.additionalImages.map((img, idx) => (
-                <img
-                  key={idx}
-                  src={SERVERURL + img}
-                  alt={`Product ${idx}`}
-                  style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px' }}
-                />
-              ))}
-            </Box> */}
           </Card>
         </Grid>
         <Grid item xs={12} md={6}>
@@ -83,11 +81,14 @@ const ProductDetails = () => {
             Brand: {product.brand}
           </Typography>
           <Typography variant="body2" color="textSecondary" gutterBottom>
-            Rating: {product.rating} ({product.reviewsCount} reviews)
+            Rating: {Array.from({ length: product.rating }, (_, index) => (
+                <StarIcon key={index} style={{ color: 'gold' }} />
+              ))} ({product.reviewsCount} reviews)
           </Typography>
           <Box sx={{ mt: 2 }}>
             <Button
               variant="contained"
+              className="bg-gradient-to-r from-blue-500 to-purple-600 text-white"
               color="primary"
               onClick={addToCart}
               sx={{ width: '100%', mt: 2 }}
@@ -97,6 +98,29 @@ const ProductDetails = () => {
           </Box>
         </Grid>
       </Grid>
+
+      {/* Recommendation section */}
+{relatedProducts.length > 0 && (
+  <Box sx={{ mt: 4 }}>
+    <Typography variant="h5" gutterBottom>
+      You might also like
+    </Typography>
+    <Box
+      sx={{
+        display: 'flex',
+        overflowX: 'auto',
+        gap: 2,
+        pb: 2,  
+      }}
+    >
+      {relatedProducts.map((product) => (
+        <Box key={product.id} sx={{ flex: '0 0 auto', width: '250px' }}>
+          <ProductCard product={product} />
+        </Box>
+      ))}
+    </Box>
+  </Box>
+)}
     </Container>
   );
 };

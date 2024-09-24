@@ -13,6 +13,9 @@ import Checkout from './pages/Checkout';
 import OrderConfirmation from './pages/OrderConfirmation';
 import MyOrders from './pages/MyOrder';
 import { CartProvider } from './context/CartContext';
+import AdminDashboard from './pages/AdminDashboard';
+import PrivateRoute from './services/PrivateRoute';
+import CategoryProducts from './pages/CategoryProducts';
 
 function App() {
   return (
@@ -21,14 +24,16 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/products/:id" element={<ProductDetails />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/account" element={<Account />} />
-          <Route path="/seller-dashboard" element={<SellerDashboard />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/order-confirmation" element={<OrderConfirmation />} />
-          <Route path="/my-orders" element={<MyOrders />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/products/:id" element={<ProductDetails />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/account" element={<PrivateRoute element={<Account />} />} /> 
+        <Route path="/seller-dashboard" element={<PrivateRoute element={<SellerDashboard />} />} /> 
+        <Route path="/checkout" element={<PrivateRoute element={<Checkout />} />} /> 
+        <Route path="/order-confirmation" element={<PrivateRoute element={<OrderConfirmation />} />} /> 
+        <Route path="/my-orders" element={<PrivateRoute element={<MyOrders />} />} /> 
+        <Route path="/admin-dashboard" element={<PrivateRoute element={<AdminDashboard />} />} />
+        <Route path="/products/category/:category" element={<PrivateRoute element={<CategoryProducts />} />} />
         </Routes>
         <ToastContainer /> 
       </Router>

@@ -33,15 +33,17 @@ const Checkout = () => {
     const orderData = {
       customerName: formData.fullName,
       address: `${formData.address}, ${formData.city}, ${formData.state}, ${formData.zipCode}, ${formData.country}`,
-      mobileNumber: formData.mobileNumber, // Add logic to collect mobile number if required
+      mobileNumber: formData.mobileNumber, 
       totalAmount: cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
       orderItems: cartItems.map(item => ({
         productName: item.product.name,
         quantity: item.quantity,
         price: item.product.price,
-        sellerId: item.product.seller.id,
+        seller: {id:item.product.seller.id},
+        product:{id: item.product.id}
       })),
       paymentMethod: formData.paymentMethod,
+      order_date: Date.now()
     };
 
     try {
@@ -152,9 +154,9 @@ const Checkout = () => {
                 value={formData.paymentMethod}
                 onChange={handleChange}
               >
-                <MenuItem value="creditCard">Credit Card</MenuItem>
-                <MenuItem value="debitCard">Debit Card</MenuItem>
-                <MenuItem value="paypal">PayPal</MenuItem>
+                <MenuItem value="creditCard" disabled>Credit Card</MenuItem>
+                <MenuItem value="debitCard" disabled>Debit Card</MenuItem>
+                <MenuItem value="paypal" disabled>PayPal</MenuItem>
                 <MenuItem value="cod">Cash on Delivery</MenuItem>
               </Select>
             </FormControl>

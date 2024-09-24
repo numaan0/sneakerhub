@@ -70,7 +70,7 @@ const Home = () => {
       {categories.map(category => (
         <div key={category.id} className="mb-8">
           <h2 className="text-xl font-bold mb-4">{category.name}</h2>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto overflow-y-hidden">
             <div className="flex space-x-4">
               {getCategoryProducts(category.name).length > 0 ? (
                 getCategoryProducts(category.name).map(product => (

@@ -42,7 +42,7 @@ const OrderDetailsDialog = ({ open, onClose, orderId, onSave }) => {
 
   const handleSave = () => {
     const updatedOrder = { ...orderDetails, status: updatedStatus };
-    onSave(updatedOrder); // Call the onSave function with the updated order
+    onSave(orderId, updatedStatus); // Call the onSave function with the updated order
     onClose(); // Close the dialog
   };
 

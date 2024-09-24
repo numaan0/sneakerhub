@@ -165,6 +165,35 @@ export const getProductsBySeller = async (sellerId) => {
   }
 };
 
+
+export const getRelatedProducts = async (category, productId) => {
+  try {
+    const response = await axios.get(`${SERVERURL}/api/products/related/${category}/${productId}`, {
+      headers: {
+        ...getAuthHeaders()
+      }
+    });
+    return response.data;
+  } catch (error) {
+    toast.error("Error fetching related products:", error);
+    throw error;
+  }
+};
+
+export const getCategories = async () => {
+  try {
+    const response = await axios.get(`${SERVERURL}/api/products/categories`, {
+      headers: {
+        ...getAuthHeaders(),
+      },
+    });
+    return response.data;
+  } catch (error) {
+    toast.error("Error fetching categories:", error);
+    throw error;
+  }
+};
+
 export const createOrder = async (order, userId) => {
   try {
     const response = await axios.post(`${SERVERURL}/api/orders`, order, { params: { userId }, headers: {
@@ -226,7 +255,7 @@ export const getOrderBySellerId = async (orderId) => {
 
 export const updateOrderStatus = async (orderId, status) => {
   try {
-    const response = await axios.put(`${SERVERURL}/api/orders/${orderId}/status`, null, { params: { status } });
+    const response = await axios.put(`${SERVERURL}/api/orders/${orderId}/status`, null, { params: { status },headers: getAuthHeaders() });
     return response.data;
   } catch (error) {
     toast.error('Update order status error:', error.response ? error.response.data : error.message);
