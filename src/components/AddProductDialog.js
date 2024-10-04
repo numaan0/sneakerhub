@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { FaSave, FaTimes } from 'react-icons/fa';
 import { SERVERURL } from '../api';
-
+import { useAuth } from '../context/AuthContext';
 const categories = [
   'Sneakers',
   'Casual',
@@ -21,6 +21,7 @@ const categories = [
 ];
 
 const AddProductDialog = ({ open, onClose, onSave, editingProduct }) => {
+
   const [product, setProduct] = useState({
     name: '',
     description: '',
@@ -31,6 +32,8 @@ const AddProductDialog = ({ open, onClose, onSave, editingProduct }) => {
     stock: '',
     seller: '',
   });
+
+  const {user} = useAuth();
 
   useEffect(() => {
     if (open) {
@@ -85,7 +88,7 @@ const AddProductDialog = ({ open, onClose, onSave, editingProduct }) => {
     formData.append('category', product.category);
     formData.append('price', product.price);
     formData.append('stock', product.stock);
-    formData.append('seller_id', product.seller);
+    formData.append('seller_id', user.id);
 
     if (product.image) {
       formData.append('image', product.image);

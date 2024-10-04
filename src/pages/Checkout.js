@@ -3,12 +3,14 @@ import { Container, Grid, TextField, Typography, Button, FormControl, InputLabel
 import { useNavigate, useLocation } from 'react-router-dom';
 import { createOrder } from './../api';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 
 const Checkout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { cartItems } = location.state || { cartItems: [] }; // Access cart items from state
   const {user} =useAuth();
+  const{clearCart} = useCart()
   const userId = user.id;
   const [formData, setFormData] = useState({
     fullName: '',
@@ -51,6 +53,7 @@ const Checkout = () => {
       // console.log('Order successfully created:', response);
 
       // Redirect to the order confirmation page
+      clearCart()
       navigate('/order-confirmation', { state: { order: response } });
     } catch (error) {
       console.error('Failed to create order:', error);

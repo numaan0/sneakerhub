@@ -99,9 +99,15 @@ const Navbar = () => {
                 </>
               ) : (
                 <>
-                  <MenuItem component={Link} to="/seller-dashboard" onClick={handleMenuClose}>
+                {user?.userType =='admin'?
+                (<MenuItem component={Link} to="/admin-dashboard" onClick={handleMenuClose}>
+                    Dashboard
+                  </MenuItem>):(
+                    <MenuItem component={Link} to="/seller-dashboard" onClick={handleMenuClose}>
                     Dashboard
                   </MenuItem>
+                  )}
+                 
                   <MenuItem component={Link} to="/account" onClick={handleMenuClose}>
                     My Profile
                   </MenuItem>

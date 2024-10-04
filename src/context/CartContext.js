@@ -35,6 +35,10 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+
+  const clearCart = () => {
+    setCartItems([]); 
+  };
   const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const discount = 0; // Replace with actual discount logic
   const finalPrice = totalPrice - discount;
@@ -47,7 +51,8 @@ export const CartProvider = ({ children }) => {
     finalPrice,
     handleRemoveItem,
     isLoading,
-    fetchCart, // Expose this method to allow manual refresh
+    fetchCart,
+    clearCart
   };
 
   return (

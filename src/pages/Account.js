@@ -138,7 +138,7 @@ const Account = () => {
             Logout
           </Button>
 
-          <List component="nav" sx={{ mt: 4, width: '100%' }}>
+          {/* <List component="nav" sx={{ mt: 4, width: '100%' }}>
             <ListItem button>
               <ListItemText primary="My Orders" />
             </ListItem>
@@ -148,7 +148,7 @@ const Account = () => {
             <ListItem button>
               <ListItemText primary="Payments" />
             </ListItem>
-          </List>
+          </List> */}
         </Box>
 
         <Box flex={1} ml={4}>

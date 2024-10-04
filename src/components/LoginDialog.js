@@ -68,6 +68,8 @@ const LoginDialog = ({ open, onClose, isLogin, setIsLogin }) => {
 
         if (user?.user_type === 'seller') {
           navigate('/seller-dashboard'); // Redirect to seller dashboard
+        }else if(user?.user_type =='admin'){
+          navigate('/admin-dashboard');
         }
       } else {
         toast.error(error);

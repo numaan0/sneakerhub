@@ -79,7 +79,8 @@ export const AuthProvider = ({ children }) => {
 
   const handleLogout = (navigate) => {
     localStorage.removeItem('authToken');
-    localStorage.removeItem('user') // Remove token from localStorage
+    localStorage.removeItem('user');
+    localStorage.clear() // Remove token from localStorage
     setUser(null);
     navigate('/'); // Clear user on logout
   };

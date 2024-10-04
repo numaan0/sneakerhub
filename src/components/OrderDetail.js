@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { FaSave, FaTimes } from 'react-icons/fa';
 import { SERVERURL, getOrderById } from '../api';
-
+import { useAuth } from '../context/AuthContext';
 const statusOptions = ["PLACED", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"];
 
 const OrderDetailsDialog = ({ open, onClose, orderId, onSave }) => {
@@ -20,6 +20,7 @@ const OrderDetailsDialog = ({ open, onClose, orderId, onSave }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [updatedStatus, setUpdatedStatus] = useState('');
+  const { user, handleLogout } = useAuth();
 
   useEffect(() => {
     if (open && orderId) {
@@ -104,14 +105,16 @@ const OrderDetailsDialog = ({ open, onClose, orderId, onSave }) => {
         >
           Close
         </Button>
-        <Button
+        {user.userType=='seller'? <Button
           startIcon={<FaSave />}
           onClick={handleSave}
           color="primary"
           variant="contained"
         >
           Save
-        </Button>
+        </Button> : null}
+
+        
       </DialogActions>
     </Dialog>
   );

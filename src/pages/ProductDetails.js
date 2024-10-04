@@ -86,7 +86,7 @@ const ProductDetails = () => {
               ))} ({product.reviewsCount} reviews)
           </Typography>
           <Box sx={{ mt: 2 }}>
-            <Button
+            {user?.userType=='customer'?<Button
               variant="contained"
               className="bg-gradient-to-r from-blue-500 to-purple-600 text-white"
               color="primary"
@@ -94,7 +94,8 @@ const ProductDetails = () => {
               sx={{ width: '100%', mt: 2 }}
             >
               Add to Cart
-            </Button>
+            </Button>:null}
+            
           </Box>
         </Grid>
       </Grid>

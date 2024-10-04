@@ -71,6 +71,17 @@ export const login = async (username, password, user_type) => {
     throw error;
   }
 };
+export const getAllUsers = async () => {
+  try {
+    const response = await axios.get(`${AUTH_API_BASE_URL}/users/all`,{ headers: getAuthHeaders() });
+    const users = response.data;
+    // localStorage.setItem('authToken', token);
+    return users
+  } catch (error) {
+    toast.error('Fetching error:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
 
 export const signup = async (username, password, email, dob, profile_pic, user_type, mobile_number) => {
   try {
@@ -116,6 +127,33 @@ export const updateUser = async (username, updatedUserData) => {
     return response.data;
   } catch (error) {
     toast.error('Update user error:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+export const deleteUser = async (username) => {
+  try {
+    const response = await axios.delete(`${AUTH_API_BASE_URL}/users/delete/${username}`, {
+      headers: getAuthHeaders(),
+    });
+    toast.success("Deleted Successfully!")
+    
+    return response;
+  } catch (error) {
+    toast.error('Failed to delete:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+export const getAllOrders = async () => {
+  try {
+    const response = await axios.get(`${AUTH_API_BASE_URL}/api/orders`, {
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+    // toast.success("Deleted Successfully!")
+    
+    return response;
+  } catch (error) {
+    toast.error('Failed to Get:', error.response ? error.response.data : error.message);
     throw error;
   }
 };
